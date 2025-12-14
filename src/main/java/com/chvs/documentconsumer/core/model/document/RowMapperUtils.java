@@ -1,18 +1,16 @@
-package com.chvs.documentconsumer.core.model.document.impl.jdbc;
+package com.chvs.documentconsumer.core.model.document;
 
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-@Component
-public class DocumentEntityRowMapper implements RowMapper<DocumentEntity> {
+@UtilityClass
+public class RowMapperUtils {
 
-    @Override
-    public DocumentEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new DocumentEntity()
+    public Document getFrom(ResultSet rs) throws SQLException {
+        return new Document()
                 .setId(rs.getObject("id", UUID.class))
                 .setDocumentId(rs.getObject("document_id", UUID.class))
                 .setPacketId(rs.getObject("packet_id", UUID.class))

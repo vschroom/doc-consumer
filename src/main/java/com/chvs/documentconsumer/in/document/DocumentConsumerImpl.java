@@ -1,7 +1,7 @@
 package com.chvs.documentconsumer.in.document;
 
+import com.chvs.documentconsumer.DocumentInfo;
 import com.chvs.documentconsumer.core.model.document.DocumentResolver;
-import com.chvs.documentproducerapi.DocumentInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,5 @@
-package com.chvs.documentconsumer.core.model.document.impl.jdbc;
+package com.chvs.documentconsumer.core.model.document;
 
-import com.chvs.documentconsumer.core.model.document.Document;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,27 +11,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.chvs.documentconsumer.sdk.AppUtils.mapToList;
-
 @Component
 @RequiredArgsConstructor
-class JdbcDocumentRepository {
+class DocumentRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final DocumentEntityRowMapper documentEntityRowMapper;
+    private final DocumentRowMapper documentRowMapper;
 
-    List<Document> findAllByPacketId(@NonNull UUID packetId) {
-        List<DocumentEntity> docs = jdbcTemplate.query(
-                "SELECT * FROM documents d WHERE d.packet_id = ?",
-                documentEntityRowMapper,
-                packetId
+    List<Document> findAllByPacketIdsIn(Collection<UUID> packetIds) {
+        var param = new MapSqlParameterSource("packetIds", packetIds);
+        return namedParameterJdbcTemplate.query(
+                "SELECT * FROM documents d WHERE d.packet_id IN (:packetIds)",
+                param,
+                documentRowMapper
         );
-
-        return mapToList(docs, d -> d);
     }
 
-    void saveAll(Collection<DocumentEntity> documents) {
+    void saveAll(Collection<Document> documents) {
         for (var document : documents) {
             jdbcTemplate.update(
                     """
@@ -55,7 +50,7 @@ class JdbcDocumentRepository {
         }
     }
 
-    void updateAll(Collection<DocumentEntity> documents) {
+    void updateAll(Collection<Document> documents) {
         for (var document : documents) {
             jdbcTemplate.update(
                     """
@@ -63,15 +58,13 @@ class JdbcDocumentRepository {
                             title = ?,
                             type = ?,
                             state = ?,
-                            body = ?,
-                            version = ?
+                            body = ?
                             WHERE id = ?
                             """,
                     document.getTitle(),
                     document.getType(),
                     document.getState(),
                     document.getBody(),
-                    document.getVersion(),
                     document.getId()
             );
         }
@@ -87,29 +80,20 @@ class JdbcDocumentRepository {
         namedParameterJdbcTemplate.update("UPDATE documents SET removed = :removed WHERE id IN (:ids)", params);
     }
 
-    List<DocumentEntity> findAllByDocumentIdIn(Collection<UUID> docIds) {
+    List<Document> findAllByDocumentIdIn(Collection<UUID> docIds) {
         var param = new MapSqlParameterSource("docIds", docIds);
         return namedParameterJdbcTemplate.query(
                 "SELECT * FROM documents d WHERE d.document_id IN (:docIds)",
                 param,
-                documentEntityRowMapper
+                documentRowMapper
         );
     }
 
-    void updateVersion(Collection<UUID> ids) {
+    void updateVersionBy(Collection<UUID> ids) {
         var param = new MapSqlParameterSource("ids", ids);
         namedParameterJdbcTemplate.update(
                 "UPDATE documents SET version = version + 1 WHERE id IN (:ids)",
                 param
-        );
-    }
-
-    List<DocumentEntity> findAllById(Collection<UUID> ids) {
-        var param = new MapSqlParameterSource("ids", ids);
-        return namedParameterJdbcTemplate.query(
-                "SELECT * FROM documents d WHERE d.id IN (:ids)",
-                param,
-                documentEntityRowMapper
         );
     }
 }

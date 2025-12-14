@@ -1,7 +1,6 @@
 package com.chvs.documentconsumer;
 
 import com.chvs.documentconsumer.in.document.DocumentConsumer;
-import com.chvs.documentproducerapi.DocumentInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

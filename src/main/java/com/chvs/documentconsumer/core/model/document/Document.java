@@ -1,32 +1,53 @@
 package com.chvs.documentconsumer.core.model.document;
 
-import com.chvs.documentproducerapi.DocumentInfo;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-public interface Document {
+@Table("documents")
 
-    UUID getId();
+@NoArgsConstructor
+@Setter(value = AccessLevel.PACKAGE)
+@Getter
+@Accessors(chain = true)
+public class Document {
 
-    UUID getDocumentId();
+    @Id
+    private UUID id;
 
-    UUID getPacketId();
+    private UUID documentId;
+    private UUID packetId;
+    private String title;
+    private String type;
+    private String state;
+    private String body;
+    private int version;
+    private boolean removed;
+    private UUID relatedDocId;
 
-    String getTitle();
+    public static Document create(DocumentCreation req) {
+        return new Document()
+                .setId(UUID.randomUUID())
+                .setDocumentId(req.documentId())
+                .setPacketId(req.packetId())
+                .setType(req.type())
+                .setTitle(req.title())
+                .setState(req.state())
+                .setBody(req.body())
+                .setVersion(1);
+    }
 
-    String getType();
-
-    String getState();
-
-    String getBody();
-
-    int getVersion();
-
-    boolean isRemoved();
-
-    UUID getRelatedDocId();
-
-    void updateBy(DocumentInfo documentInfo);
-
-    void updateVersion();
+    public void updateBy(DocumentUpdate req) {
+        this.packetId = req.packetId();
+        this.type = req.type();
+        this.title = req.title();
+        this.state = req.state();
+        this.body = req.body();
+    }
 }

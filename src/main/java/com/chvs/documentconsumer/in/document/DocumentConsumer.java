@@ -1,6 +1,6 @@
 package com.chvs.documentconsumer.in.document;
 
-import com.chvs.documentproducerapi.DocumentInfo;
+import com.chvs.documentconsumer.DocumentInfo;
 
 import java.util.Collection;
 
