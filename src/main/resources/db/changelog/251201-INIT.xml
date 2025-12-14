@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-5.0.xsd">
+    <changeSet id="516b38ee-6e40-414f-aafd-f3e178402ebe" author="{author}">
+        <createTable tableName="documents" schemaName="common">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="document_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="packet_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR"/>
+            <column name="type" type="VARCHAR"/>
+            <column name="state" type="VARCHAR"/>
+            <column name="body" type="VARCHAR"/>
+            <column name="version" type="INT4"/>
+            <column name="removed" type="BOOLEAN"/>
+            <column name="related_doc_id" type="UUID"/>
+        </createTable>
+        <addUniqueConstraint tableName="documents"
+                             schemaName="common"
+                             columnNames="document_id, packet_id"
+                             constraintName="document_packet_id_unique_fk"/>
+    </changeSet>
+</databaseChangeLog>

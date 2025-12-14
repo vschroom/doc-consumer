@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5438/document_consumer_db
+    username: document_consumer_admin
+    password: 'qwerty123'
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/master.xml
+    contexts: prod
+    default-schema: ${default-schema.name}
+
+default-schema:
+  name: common

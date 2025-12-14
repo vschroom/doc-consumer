@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  postgres-db:
+    image: postgres:18.1
+    environment:
+      POSTGRES_USER: document_consumer_admin
+      POSTGRES_PASSWORD: 'qwerty123'
+      POSTGRES_DB: document_consumer_db
+    ports:
+      - '5438:5432'
